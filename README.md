@@ -104,6 +104,21 @@ if updated_state != st.session_state.menu_state:
     st.rerun()
 ```
 
+## Dynamic Key Approach
+
+For more reliable re-rendering when state changes, you can use a dynamic key based on the current state:
+```python
+# Use a unique key for the component based on the state
+component_key = f"menu_group_{hash(str(st.session_state.menu_state))}"
+
+# Use the component with dynamic key
+updated_state = st_batch_menu_group(
+    st.session_state.menu_state,
+    key=component_key
+)
+```
+This approach ensures that when the menu state changes, Streamlit creates a new component instance with a different key, forcing a complete re-render with the updated options.
+
 ## API Reference
 
 ### `st_batch_menu_group(menu_state, key=None)`
@@ -127,9 +142,62 @@ if updated_state != st.session_state.menu_state:
 **Returns**:
 - `dict`: The updated menu state after user interaction.
 
+## Appearance Customization
+
+The component's appearance can be customized using color parameters:
+
+```python
+updated_state = st_batch_menu_group(
+    menu_state,
+    key="my_menu_group",
+    label_color="#ffffff",           # Color for menu labels
+    menu_bg_color="#1e1e1e",         # Background color for menus
+    menu_border_color="#444444",     # Border color for menus
+    menu_hover_color="#1890ff",      # Border color on hover
+    menu_focus_shadow_color="rgba(24, 144, 255, 0.3)",  # Shadow when focused
+    menu_text_color="#ffffff"        # Text color for menu items
+)
+```
+
+### Theme Examples
+
+You can define themes and apply them to the component:
+
+```python
+# Define theme color schemes
+themes = {
+    "Light": {
+        "label_color": "#333333",
+        "menu_bg_color": "#ffffff",
+        "menu_border_color": "#d9d9d9",
+        "menu_hover_color": "#40a9ff",
+        "menu_focus_shadow_color": "rgba(24, 144, 255, 0.2)",
+        "menu_text_color": "#333333"
+    },
+    "Dark": {
+        "label_color": "#ffffff",
+        "menu_bg_color": "#1e1e1e",
+        "menu_border_color": "#444444",
+        "menu_hover_color": "#1890ff",
+        "menu_focus_shadow_color": "rgba(24, 144, 255, 0.3)",
+        "menu_text_color": "#ffffff"
+    }
+}
+
+# Apply theme colors to the component
+current_theme = "Dark"
+theme_colors = themes[current_theme]
+
+updated_state = st_batch_menu_group(
+    menu_state,
+    key="my_menu_group",
+    **theme_colors
+)
+```
+
 ## Example
 
-See the included `app.py` for a complete example of implementing cascading menus with Exchange → Type → Symbol dependencies.
+See the included `app.py` for a complete example of implementing cascading menus with Exchange → Type → Symbol dependencies as well as optional themed coloring of the menus.
 
 ## How It Works
 

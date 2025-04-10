@@ -6,6 +6,34 @@ st.set_page_config(layout="wide")
 st.title("Batch Menu Group Demo")
 st.markdown("### Demonstrating cascading menus with reduced page reruns")
 
+# Define theme color schemes
+themes = {
+    "Light": {
+        "label_color": "#aaaaaa",  # Gray text for labels in Light theme
+        "menu_bg_color": "#ffffff",
+        "menu_border_color": "#d9d9d9",
+        "menu_hover_color": "#40a9ff",
+        "menu_focus_shadow_color": "rgba(24, 144, 255, 0.2)",
+        "menu_text_color": "#333333"  # Dark text for menu items in Light theme
+    },
+    "Dark": {
+        "label_color": "#ffffff",  # White text for labels in Dark theme
+        "menu_bg_color": "#1e1e1e",
+        "menu_border_color": "#444444",
+        "menu_hover_color": "#1890ff",
+        "menu_focus_shadow_color": "rgba(24, 144, 255, 0.3)",
+        "menu_text_color": "#ffffff"  # White text for menu items in Dark theme
+    },
+    "Custom": {
+        "label_color": "#ffd700",  # Gold
+        "menu_bg_color": "#2c3e50",  # Dark blue
+        "menu_border_color": "#3498db",  # Blue
+        "menu_hover_color": "#e74c3c",  # Red
+        "menu_focus_shadow_color": "rgba(231, 76, 60, 0.3)",
+        "menu_text_color": "#ffffff"  # White text for menu items in Custom theme
+    }
+}
+
 # Mock data for demonstration
 exchange_types = {
     "Binance": ["Spot", "Futures", "Options"],
@@ -58,6 +86,10 @@ if "needs_update" not in st.session_state:
 if "changed_menu" not in st.session_state:
     st.session_state.changed_menu = None
 
+# Track current theme
+if "current_theme" not in st.session_state:
+    st.session_state.current_theme = "Dark"
+
 # Initial menu state setup
 if "menu_state" not in st.session_state:
     default_exchange = "Binance"
@@ -88,16 +120,30 @@ if "menu_state" not in st.session_state:
             "label": "Indicator",
             "options": ["None", "MA", "EMA", "RSI"],
             "value": "None"
+        },
+        "theme_select": {
+            "label": "Theme",
+            "options": ["Dark", "Light", "Custom"],
+            "value": st.session_state.current_theme
         }
     }
 
 # Use a unique key for the component based on the state
 component_key = f"price_chart_menus_{hash(str(st.session_state.menu_state))}"
 
-# Use the batch menu component
+# Get current theme colors
+theme_colors = themes[st.session_state.current_theme]
+
+# Use the batch menu component with theme colors
 updated_state = st_batch_menu_group(
     st.session_state.menu_state,
-    key=component_key
+    key=component_key,
+    label_color=theme_colors["label_color"],
+    menu_bg_color=theme_colors["menu_bg_color"],
+    menu_border_color=theme_colors["menu_border_color"],
+    menu_hover_color=theme_colors["menu_hover_color"],
+    menu_focus_shadow_color=theme_colors["menu_focus_shadow_color"],
+    menu_text_color=theme_colors["menu_text_color"]
 )
 
 # Check if state has changed
@@ -153,6 +199,10 @@ if updated_state != st.session_state.menu_state:
             if valid_state["symbol_select"]["value"] not in new_symbols:
                 valid_state["symbol_select"]["value"] = new_symbols[0]
 
+    elif changed_menu == "theme_select":
+        # Update the current theme
+        st.session_state.current_theme = valid_state["theme_select"]["value"]
+
     # Update session state with the new valid state
     st.session_state.menu_state = valid_state
     st.session_state.needs_update = True
@@ -162,7 +212,7 @@ if updated_state != st.session_state.menu_state:
 
 # Display the current selections
 st.subheader("Current Selections")
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 with col1:
     st.metric("Exchange", st.session_state.menu_state["exchange_select"]["value"])
 with col2:
@@ -173,6 +223,24 @@ with col4:
     st.metric("Interval", st.session_state.menu_state["interval_select"]["value"])
 with col5:
     st.metric("Indicator", st.session_state.menu_state["indicator_select"]["value"])
+with col6:
+    st.metric("Theme", st.session_state.menu_state["theme_select"]["value"])
+
+# Display current theme colors
+st.subheader("Current Theme Colors")
+theme_colors = themes[st.session_state.current_theme]
+col1, col2, col3, col4, col5 = st.columns(5)
+with col1:
+    st.color_picker("Label Color", theme_colors["label_color"], disabled=True)
+with col2:
+    st.color_picker("Background", theme_colors["menu_bg_color"], disabled=True)
+with col3:
+    st.color_picker("Border", theme_colors["menu_border_color"], disabled=True)
+with col4:
+    st.color_picker("Hover", theme_colors["menu_hover_color"], disabled=True)
+with col5:
+    st.text("Focus Shadow")
+    st.code(theme_colors["menu_focus_shadow_color"])
 
 # Simulate chart display
 st.subheader("Price Chart")
@@ -187,6 +255,7 @@ st.markdown("""
 2. **Batch Updates**: When any menu changes, the entire state is sent back to Python
 3. **Dependency Handling**: Python code handles dependencies between menus
 4. **Reduced Reruns**: The page only reruns once per user interaction
+5. **Theme Customization**: The component's appearance can be customized with color parameters
 
 This approach significantly reduces the number of page reruns compared to using individual Streamlit select boxes.
 """)
