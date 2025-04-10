@@ -1,0 +1,56 @@
+st_batch_menu_group
+├── DEVELOP_AND_DEPLOY.txt
+├── LICENSE
+├── MANIFEST.in
+├── README.md
+├── setup.py
+├── src
+│   └── app.py
+├── st_batch_menu_group
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   └── __init__.cpython-313.pyc
+│   └── frontend
+│       ├── build
+│       ├── node_modules
+│       ├── package-lock.json
+│       ├── package.json
+│       ├── public
+│       ├── src
+│       └── tsconfig.json
+├── st_batch_menu_group.egg-info
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   ├── dependency_links.txt
+│   ├── requires.txt
+│   └── top_level.txt
+├── tree.txt
+└── venv
+    ├── bin
+    │   ├── Activate.ps1
+    │   ├── activate
+    │   ├── activate.csh
+    │   ├── activate.fish
+    │   ├── f2py
+    │   ├── jsonschema
+    │   ├── normalizer
+    │   ├── numpy-config
+    │   ├── pip
+    │   ├── pip3
+    │   ├── pip3.13
+    │   ├── python -> python3.13
+    │   ├── python3 -> python3.13
+    │   ├── python3.13 -> /opt/homebrew/opt/python@3.13/bin/python3.13
+    │   ├── streamlit
+    │   └── streamlit.cmd
+    ├── etc
+    │   └── jupyter
+    ├── include
+    │   └── python3.13
+    ├── lib
+    │   └── python3.13
+    ├── pyvenv.cfg
+    └── share
+        └── jupyter
+
+20 directories, 34 files

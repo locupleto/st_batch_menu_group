@@ -1,0 +1,54 @@
+Notes on development-loop for this project
+==========================================
+
+TypeScript Development (Frontend)
+---------------------------------
+- Open a zsh terminal in VSCode
+- Navigate to the frontend directory:
+  cd /path/to/st_batch_menu_group/st_batch_menu_group/frontend
+
+Install dependencies:
+npm install --legacy-peer-deps
+
+For development mode:
+npm start
+
+For rebuilding:
+npm run build
+
+Python Development (Backend)
+----------------------------
+- Open another terminal in VSCode
+- Navigate to the project root:
+cd /path/to/st_batch_menu_group
+
+- Install the package in development mode:
+pip install -e .
+
+- Run the demo app:
+streamlit run src/app.py
+
+Development Tips
+----------------
+Set _RELEASE = False in st_batch_menu_group/__init__.py during development to connect to the local dev server
+Set _RELEASE = True for production to use the compiled build
+Versioning and Release
+Update version numbers in:
+- st_batch_menu_group/__init__.py
+- setup.py
+- st_batch_menu_group/frontend/package.json
+
+Build the package:
+------------------
+python setup.py sdist bdist_wheel
+
+Upload to PyPI:
+---------------
+
+pip install twine  # if not installed
+twine upload dist/*
+
+Tag the release:
+
+git tag -a v0.0.x -m "Version 0.0.x release"
+git push origin v0.0.x
