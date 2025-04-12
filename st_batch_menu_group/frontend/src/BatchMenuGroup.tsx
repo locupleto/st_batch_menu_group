@@ -1,4 +1,4 @@
-// AntMenu.tsx with configurable colors
+// BatchMenuGroup.tsx with reduced vertical space
 import React, { useEffect, useState } from "react";
 import {
   ComponentProps,
@@ -32,8 +32,8 @@ const BatchMenuGroup = (props: ComponentProps) => {
   useEffect(() => {
     const element = document.getElementById("batch-menu-container");
     if (element) {
-      // Even more reduced height
-      Streamlit.setFrameHeight(element.offsetHeight + 5);
+      // Significantly reduced height offset
+      Streamlit.setFrameHeight(element.offsetHeight + 2);
     }
   }, [state]);
 
@@ -64,7 +64,7 @@ const BatchMenuGroup = (props: ComponentProps) => {
             background-color: ${menuBgColor};
             border: 1px solid ${menuBorderColor};
             border-radius: 4px;
-            padding: 5px 8px;
+            padding: 4px 8px;
             padding-right: 25px;
             font-size: 14px;
             cursor: pointer;
@@ -94,13 +94,13 @@ const BatchMenuGroup = (props: ComponentProps) => {
           .menu-label {
             font-weight: 500;
             font-size: 12px;
-            margin-bottom: 1px;
+            margin-bottom: 0px;
             color: ${labelColor};
           }
 
           .menu-container {
             margin-right: 10px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             min-width: 100px;
             max-width: none;
             flex: 1;
@@ -118,7 +118,7 @@ const BatchMenuGroup = (props: ComponentProps) => {
           display: "flex",
           flexWrap: "nowrap",
           width: "100%",
-          gap: "6px",
+          gap: "4px",
           overflow: "hidden",
         }}
       >
