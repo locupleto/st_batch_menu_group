@@ -1,4 +1,4 @@
-st_batch_menu_group
+../st_batch_menu_group
 ├── DEVELOP_AND_DEPLOY.txt
 ├── LICENSE
 ├── MANIFEST.in
@@ -31,18 +31,33 @@ st_batch_menu_group
     │   ├── activate
     │   ├── activate.csh
     │   ├── activate.fish
+    │   ├── docutils
     │   ├── f2py
     │   ├── jsonschema
+    │   ├── keyring
+    │   ├── markdown-it
     │   ├── normalizer
     │   ├── numpy-config
     │   ├── pip
     │   ├── pip3
     │   ├── pip3.13
+    │   ├── pygmentize
     │   ├── python -> python3.13
     │   ├── python3 -> python3.13
     │   ├── python3.13 -> /opt/homebrew/opt/python@3.13/bin/python3.13
+    │   ├── rst2html
+    │   ├── rst2html4
+    │   ├── rst2html5
+    │   ├── rst2latex
+    │   ├── rst2man
+    │   ├── rst2odt
+    │   ├── rst2pseudoxml
+    │   ├── rst2s5
+    │   ├── rst2xetex
+    │   ├── rst2xml
     │   ├── streamlit
-    │   └── streamlit.cmd
+    │   ├── streamlit.cmd
+    │   └── twine
     ├── etc
     │   └── jupyter
     ├── include
@@ -53,4 +68,4 @@ st_batch_menu_group
     └── share
         └── jupyter
 
-20 directories, 34 files
+20 directories, 49 files

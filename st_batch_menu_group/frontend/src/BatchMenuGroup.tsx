@@ -101,20 +101,26 @@ const BatchMenuGroup = (props: ComponentProps) => {
           .menu-container {
             margin-right: 10px;
             margin-bottom: 4px;
-            min-width: 150px;
-            max-width: 250px;
+            min-width: 100px;
+            max-width: none;
             flex: 1;
           }
 
           @media (max-width: 768px) {
             .menu-container {
-              min-width: 120px;
+              min-width: 80px;
             }
           }
         `}
       </style>
       <div
-        style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "6px" }}
+        style={{
+          display: "flex",
+          flexWrap: "nowrap",
+          width: "100%",
+          gap: "6px",
+          overflow: "hidden",
+        }}
       >
         {Object.entries(state).map(([menuId, menuData]) => (
           <div key={menuId} className="menu-container">

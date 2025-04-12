@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setuptools.setup(
     name="st_batch_menu_group",
-    version="0.1.1",
+    version="0.1.2",
     author="Urban Ottosson",
     author_email="urban@ottosson.org",
     description="Streamlit Component for a batch menu group",
