@@ -28,14 +28,72 @@ const BatchMenuGroup = (props: ComponentProps) => {
     props.args.menu_focus_shadow_color || "rgba(24, 144, 255, 0.2)";
   const menuTextColor = props.args.menu_text_color || "#333333";
 
-  // Update component height when rendered - reduced height
-  useEffect(() => {
+  // Streamlit passes the active theme to components. Use its base to set
+  // color-scheme so native <select> dropdown popups render dark on a dark
+  // theme (otherwise WebKit paints the popups white).
+  const themeBase = (props as any).theme && (props as any).theme.base;
+  const colorScheme = themeBase === "dark" ? "dark" : "light";
+
+  // Bump this to force a re-render (and thus a full repaint) on resize/zoom.
+  const [, forceTick] = useState(0);
+
+  const updateHeight = () => {
     const element = document.getElementById("batch-menu-container");
     if (element) {
       // Significantly reduced height offset
       Streamlit.setFrameHeight(element.offsetHeight + 2);
     }
+  };
+
+  // Update component height when rendered - reduced height
+  useEffect(() => {
+    updateHeight();
   }, [state]);
+
+  // Handle iframe / viewport resize, including browser zoom.
+  //
+  // WHY: This component renders inside its own iframe. On Safari/WebKit, when
+  // the iframe's compositing surface GROWS (e.g. the user zooms out so the
+  // toolbar gets a wider surface), Safari does not reliably repaint the newly
+  // exposed region and leaves it painted WHITE — the "white block" over the
+  // menus. The component previously only reacted to state changes, so a pure
+  // width/zoom resize triggered nothing and the stale white surface persisted.
+  //
+  // Fix: on any resize, force a re-render AND nudge the iframe height (which
+  // makes the host resize the iframe element and forces WebKit to repaint the
+  // whole surface, clearing the white region).
+  useEffect(() => {
+    let raf = 0;
+    const onResize = () => {
+      forceTick((t) => t + 1);
+      const element = document.getElementById("batch-menu-container");
+      if (element) {
+        // Nudge the height by 1px, then settle — forces WebKit to repaint the
+        // full (resized) iframe surface rather than leaving stale white tiles.
+        Streamlit.setFrameHeight(element.offsetHeight + 3);
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => updateHeight());
+      }
+    };
+
+    window.addEventListener("resize", onResize);
+
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(onResize);
+      // Observe the document element so browser-zoom-driven viewport changes
+      // (which resize the iframe's surface) are caught.
+      ro.observe(document.documentElement);
+      const element = document.getElementById("batch-menu-container");
+      if (element) ro.observe(element);
+    }
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
+      if (ro) ro.disconnect();
+    };
+  }, []);
 
   // Handle change in any select box
   const handleChange = (menuId: string, value: string) => {
@@ -56,9 +114,26 @@ const BatchMenuGroup = (props: ComponentProps) => {
   };
 
   return (
-    <div id="batch-menu-container" style={{ width: "100%" }}>
+    <div
+      id="batch-menu-container"
+      style={{ width: "100%", backgroundColor: menuBgColor }}
+    >
       <style>
         {`
+          /* Opaque document background. If WebKit ever leaves part of the
+             iframe's compositing surface unpainted, its default backing is
+             WHITE; painting the whole document with the (theme) menu background
+             guarantees the exposed region is solid, never white. */
+          html, body {
+            margin: 0;
+            background: ${menuBgColor};
+            color-scheme: ${colorScheme};
+          }
+
+          select, option {
+            color-scheme: ${colorScheme};
+          }
+
           select {
             appearance: none;
             background-color: ${menuBgColor};
